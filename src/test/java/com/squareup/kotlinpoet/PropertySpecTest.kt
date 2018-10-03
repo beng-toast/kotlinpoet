@@ -51,7 +51,8 @@ class PropertySpecTest {
   }
 
   @Test fun inlineBothAccessors() {
-    val prop = PropertySpec.varBuilder("foo", String::class)
+    val prop = PropertySpec.builder("foo", String::class.asTypeName())
+        .mutable(true)
         .getter(FunSpec.getterBuilder()
             .addModifiers(KModifier.INLINE)
             .addStatement("return %S", "foo")
@@ -234,7 +235,8 @@ class PropertySpecTest {
 
   @Test fun reifiedTypeVariableNotAllowedWhenSetterNotInline() {
     assertThrows<IllegalArgumentException> {
-      PropertySpec.varBuilder("property", String::class)
+      PropertySpec.builder("property", String::class.asTypeName())
+          .mutable(true)
           .addTypeVariable(TypeVariableName("T").reified(true))
           .setter(FunSpec.setterBuilder()
               .addParameter("value", String::class)
@@ -247,7 +249,8 @@ class PropertySpecTest {
 
   @Test fun reifiedTypeVariableNotAllowedWhenOnlySetterIsInline() {
     assertThrows<IllegalArgumentException> {
-      PropertySpec.varBuilder("property", String::class)
+      PropertySpec.builder("property", String::class.asTypeName())
+          .mutable(true)
           .addTypeVariable(TypeVariableName("T").reified(true))
           .getter(FunSpec.getterBuilder()
               .addStatement("return %S", "")
